@@ -3,10 +3,13 @@
 layout (location=0) in vec3 vertPos;
 layout (location=1) in vec3 vertNormal;
 layout (location=2) in vec2 texCoord;	// added
+layout (location = 3) in vec3 vertTangent;
 
 out vec2 tc;	// added
 out vec3 vNormal, vLightDir, vVertPos, vHalfVec; 
 out vec4 shadow_coord;
+out vec2 booleanVar;
+out vec3 varyingTangent;
 
 struct PositionalLight
 {	vec4 ambient, diffuse, specular;
@@ -24,11 +27,19 @@ uniform mat4 mv_matrix;
 uniform mat4 proj_matrix;
 uniform mat4 normalMat;
 uniform mat4 shadowMVP;
+uniform int obj;
+uniform int environmentMap;
+uniform int normalmap;
 layout (binding=0) uniform sampler2DShadow shadowTex;
 layout (binding=1) uniform sampler2D texSamp; // added
+layout (binding=2) uniform samplerCube tex_map;
 
 void main(void)
-{	//output the vertex position to the rasterizer for interpolation
+{	
+	
+	varyingTangent = (normalMat * vec4(vertTangent,1.0)).xyz;
+
+	//output the vertex position to the rasterizer for interpolation
 	vVertPos = (mv_matrix * vec4(vertPos,1.0)).xyz;
         
 	//get a vector from the vertex to the light and output it to the rasterizer for interpolation
